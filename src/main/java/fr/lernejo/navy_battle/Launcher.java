@@ -29,6 +29,7 @@ public class Launcher {
         server.setExecutor(Executors.newFixedThreadPool(1));
         server.createContext("/ping", new MyHttpHandler());
         server.createContext("/api/game/start", new POSTHandler());
+        server.createContext("/api/game/fire", new GETHandler());
         server.start();
 
         if (args.length > 1) {

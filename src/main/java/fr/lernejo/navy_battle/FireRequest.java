@@ -8,4 +8,12 @@ public class FireRequest {
         this.consequence = consequence;
         this.shipLeft = shipLeft;
     }
+
+    public Consequence getConsequence() {
+        return consequence;
+    }
+
+    public boolean isShipLeft() {
+        return shipLeft;
+    }
 }

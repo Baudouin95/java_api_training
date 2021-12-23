@@ -57,10 +57,6 @@ public class POSTHandler implements HttpHandler {
         }
     }
 
-    private String composeResponse(UUID id, InetSocketAddress url, String message) {
-        return "\"id\": "+id+"\n\"url\": "+url.toString()+"\n\"message\": "+message;
-    }
-
     private boolean isFormatCorrect(String response) throws JsonSyntaxException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         RequestBody body = gson.fromJson(response,RequestBody.class);
