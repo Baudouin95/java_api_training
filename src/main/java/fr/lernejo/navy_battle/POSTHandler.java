@@ -1,5 +1,7 @@
 package fr.lernejo.navy_battle;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -12,7 +14,6 @@ import java.util.regex.Pattern;
 
 public class POSTHandler implements HttpHandler {
     private final UUID id = UUID.randomUUID();
-
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (exchange.getRequestMethod().equals("POST"))
@@ -22,10 +23,12 @@ public class POSTHandler implements HttpHandler {
     }
 
     private void postContext(HttpExchange exchange) throws IOException {
-        String body = composeResponse(id,exchange.getLocalAddress(), "May the best win");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String body = gson.toJson(new RequestBody(id.toString(),exchange.getLocalAddress().toString(),"May the best Win!"));
         StringBuilder sb = new StringBuilder();
         for (int ch; (ch = exchange.getRequestBody().read()) != -1; )
             sb.append((char) ch);
+
         if(!isFormatCorrect(sb.toString()))
             badRequest(exchange);
         else {
@@ -58,15 +61,11 @@ public class POSTHandler implements HttpHandler {
     }
 
     private boolean isFormatCorrect(String response) {
-        Pattern patternID = Pattern.compile("\"id\":\s\"[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}\",");
-        Pattern patternURL = Pattern.compile("\"url\":\s\"(https?|ftp|ssh|mailto):\\/\\/[a-z0-9\\/:%_+.,#?!@&=-]+\",");
-        Pattern patternMessage = Pattern.compile("\"message\":\s\"(.*)\"");
-        Matcher matchID = patternID.matcher(response);
-        Matcher matchURL = patternURL.matcher(response);
-        Matcher matchMessage = patternMessage.matcher(response);
-        if(matchURL.find() && matchID.find() && matchMessage.find())
-            return true;
-        else
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        RequestBody body = gson.fromJson(response,RequestBody.class);
+        if(body.getMessage() == null || body.getId() == null || body.getClass() == null)
             return false;
+        else
+            return true;
     }
 }

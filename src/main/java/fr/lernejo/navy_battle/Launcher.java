@@ -1,5 +1,7 @@
 package fr.lernejo.navy_battle;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -29,9 +31,9 @@ public class Launcher {
         server.createContext("/api/game/start", new POSTHandler());
         server.start();
 
-        if (args.length > 1 && args[1].matches("(https?|ftp|ssh|mailto):\\/\\/[a-z0-9\\/:%_+.,#?!@&=-]+")) {
-            UUID id = UUID.randomUUID();
-            String body = "\"id\": \"0c575465-21f6-43c9-8a2d-bc64c3ae6241\", \"url\": \"http://localhost:8795\", \"message\": \"I will crush you!\"";
+        if (args.length > 1) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String body = gson.toJson(new RequestBody("0c575465-21f6-43c9-8a2d-bc64c3ae6241","http://localhost:"+args[1],"I Will crush you!"));
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(args[1] + "/api/game/start"))
@@ -40,6 +42,7 @@ public class Launcher {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
             HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
             System.out.println(response.body());
         }
     }
