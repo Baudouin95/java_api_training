@@ -33,7 +33,7 @@ public class Launcher {
 
         if (args.length > 1) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String body = gson.toJson(new RequestBody("0c575465-21f6-43c9-8a2d-bc64c3ae6241","http://localhost:"+args[1],"I Will crush you!"));
+            String body = gson.toJson(new RequestBody());
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(args[1] + "/api/game/start"))
@@ -42,7 +42,6 @@ public class Launcher {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
             HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
             System.out.println(response.body());
         }
     }

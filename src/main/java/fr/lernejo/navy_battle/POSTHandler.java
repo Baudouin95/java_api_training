@@ -2,6 +2,7 @@ package fr.lernejo.navy_battle;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -60,7 +61,7 @@ public class POSTHandler implements HttpHandler {
         return "\"id\": "+id+"\n\"url\": "+url.toString()+"\n\"message\": "+message;
     }
 
-    private boolean isFormatCorrect(String response) {
+    private boolean isFormatCorrect(String response) throws JsonSyntaxException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         RequestBody body = gson.fromJson(response,RequestBody.class);
         if(body.getMessage() == null || body.getId() == null || body.getClass() == null)

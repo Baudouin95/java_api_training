@@ -13,6 +13,12 @@ public class RequestBody {
         this.message = message;
     }
 
+    public RequestBody() {
+        this.id = null;
+        this.url = null;
+        this.message = null;
+    }
+
 
     public String getId() {
         return id;
